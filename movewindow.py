@@ -18,8 +18,14 @@ def cycle(num):
             final = 10
             num+=1
 
+    match args.jump:
+        case 1:
+            req = 9
+        case 0:
+            req = int(i3.get_tree().find_focused().workspace().ipc_data["output"][-1])
+
     for ws in range(num,final,inc):
-        if not workspaces[f"{ws}"] == 1:
+        if workspaces[f"{ws}"] == req or workspaces[f"{ws}"] == 9:
             match args.move:
                 case 0:
                     i3.command(f"workspace number {ws}")
@@ -32,7 +38,7 @@ def getActiveWorkspace():
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="daswosau's automatic window sorter/mover.")
+    parser = argparse.ArgumentParser(description="daswosau's automatic workspace switcher.")
     parser.add_argument(
         "--move", 
         action="store_true", 
@@ -42,6 +48,11 @@ if __name__ == "__main__":
         "--reverse", 
         action="store_true", 
         help="In reverse order."
+    )
+    parser.add_argument(
+        "--jump", 
+        action="store_true", 
+        help="Jump to nearest unused.."
     )
     args = parser.parse_args()
 
@@ -62,8 +73,9 @@ if __name__ == "__main__":
     for ws_num, output in [(ws.num, ws.output) for ws in i3.get_workspaces()]:
         workspaces[f"{ws_num}"] = int(output[-1])
 
+    print(workspaces)
+
     cycle(getActiveWorkspace())
 
-print("--- %s seconds ---" % (time.time() - start_time))
 
 
